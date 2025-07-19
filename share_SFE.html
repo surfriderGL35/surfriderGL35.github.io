@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GL35 Surfrider</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --light-blue: #B3D4FF;
+      --dark-blue:  #005382;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(90deg, #0073BE, #1A3047);
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 180px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: height 0.3s ease, padding 0.3s ease;
+      z-index: 1000;
+    }
+    .header-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: flex-direction 0.3s ease;
+    }
+    .header-content img {
+      height: 80px;
+      transition: height 0.3s ease;
+    }
+    .title-container {
+      text-align: center;
+      transition: margin 0.3s ease;
+    }
+    .title-primary {
+      font-size: 1.5rem;
+      color: #000;
+      line-height: 1;
+    }
+    .title-secondary {
+      font-size: 1.25rem;
+      color: #000;
+      margin-top: 0.25rem;
+    }
+    header.shrink {
+      height: 60px;
+      padding: 0 20px;
+      justify-content: flex-start;
+    }
+    header.shrink .header-content {
+      flex-direction: row;
+      align-items: center;
+      margin-left: 48px;
+    }
+    header.shrink .header-content img {
+      height: 32px;
+    }
+    header.shrink .title-container {
+      text-align: left;
+      margin-left: 12px;
+    }
+    header.shrink .title-primary {
+      font-size: 1rem;
+    }
+    header.shrink .title-secondary {
+      font-size: 0.875rem;
+      margin-top: 0;
+    }
+    main {
+      padding-top: 180px;
+    }
+    /* Icônes section */
+    .icons-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      max-width: 400px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #000;
+      font-size: 0.9rem;
+    }
+    .icon-item img {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 0.5rem;
+      transition: transform 0.2s ease;
+    }
+    .icon-item:hover img {
+      transform: scale(1.1);
+    }
+    .icon-window {
+      background: #fff;
+      border-radius: 12px;
+      padding: 0.75rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      max-width: 360px;
+      margin: 1.5rem auto;
+    }
+    .icon-window-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1A3047;
+      text-align: center;
+      margin-bottom: 0.75rem;
+    }
+    /* Styles pour le menu mobile */
+    .menu-toggle {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 1100;
+    }
+    .menu-toggle img {
+      width: 100%;
+      height: 100%;
+    }
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 75%;
+      max-width: 300px;
+      height: 100%;
+      background: #ECE4CD;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+      transition: left 0.3s ease;
+      z-index: 1050;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .mobile-menu.open {
+      left: 0;
+    }
+    .mobile-menu a {
+      color: #000;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+    .mobile-menu .close-menu {
+      align-self: flex-end;
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .mobile-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .mobile-menu li {
+      margin-bottom: 0.5rem;
+    }
+    .mobile-menu .menu-category {
+      font-weight: bold;
+      text-align: center;
+      margin: 1rem 0 0.5rem;
+      cursor: default;
+    }
+    .mobile-menu a {
+      display: block;
+      padding: 0.75rem 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header id="mainHeader">
+    <button class="menu-toggle" aria-label="Ouvrir le menu">
+      <img src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/icons/menu.svg" alt="Menu">
+    </button>
+    <div class="header-content">
+      <img src="images/CHAPTER_logo_blue_RGB_blue.png" alt="Logo Surfrider Foundation">
+      <div class="title-container">
+        <div class="title-primary">Surfrider Foundation</div>
+        <div class="title-secondary">Ille-Et-Vilaine</div>
+      </div>
+    </div>
+  </header>
+  <nav class="mobile-menu" id="mobileMenu">
+    <button class="close-menu" aria-label="Fermer le menu">&times;</button>
+    <ul>
+      <li class="menu-category">Carte de Visite</li>
+      <li><a href="https://linktr.ee/surfrider_illeetvilaine">Linktree</a></li>
+
+      <li class="menu-category">Bénévole</li>
+      <li><a href="https://surfridereu-my.sharepoint.com/:f:/g/personal/antenne22-35_surfrider_eu/ElrOeKsqhUJBpftHoF_Hk_gB9IStf7nLn1Xhw16bwhcK7w?e=dXTZPy">OneDrive</a></li>
+      <li><a href="https://discord.com/">Discord</a></li>
+
+      <li class="menu-category">Réseaux sociaux</li>
+      <li><a href="https://www.instagram.com/surfrider_illeetvilaine?igsh=MXhwanJ1c241MXduMQ%3D%3D&utm_source=qr"><strong>Instagram</strong><br>@surfrider_illeet_vilaine</a></li>
+      <li><a href="https://www.facebook.com/surfriderfoundationeuropeantenne2235/?locale=fr_FR"><strong>Facebook</strong><br>Surfrider Foundation Europe Antenne 35 </a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <!-- Section des icônes -->
+    <div style="display: flex; justify-content: center; margin: 1.5rem 0;">
+      <a href="https://surfriderGL35.github.io" style="display: inline-block; padding: 0.5rem 1.25rem; background: white; color: #1A3047; text-decoration: none; border-radius: 999px; font-weight: 600; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); transition: background 0.3s;">
+        ← Retour
+      </a>
+    </div>
+    <div class="icon-window">
+      <h2 class="icon-window-title">Favoris</h2>
+      <section class="icons-container">
+        <a href="https://surfriderGL35.github.io" class="icon-item">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/googlehome.svg" alt="Accueil" style="width: 48px; height: 48px;">
+          <span>Accueil</span>
+        </a>
+        <a href="https://linktr.ee/surfrider_illeetvilaine" class="icon-item">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg" alt="Linktree">
+          <span>Linktree</span>
+        </a>
+        <a href="https://surfridereu-my.sharepoint.com/:f:/g/personal/antenne22-35_surfrider_eu/ElrOeKsqhUJBpftHoF_Hk_gB9IStf7nLn1Xhw16bwhcK7w?e=dXTZPy" class="icon-item">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/microsoftonedrive.svg" alt="OneDrive">
+          <span>OneDrive</span>
+        </a>
+        <a href="https://discord.com/" class="icon-item">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg" alt="Discord">
+          <span>Discord</span>
+        </a>
+      </section>
+    </div>
+    <div class="icon-window">
+  <h2 class="icon-window-title" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" alt="Notion" style="width: 28px; height: 28px;"> Notion
+  </h2>
+
+  <a href="https://www.notion.so/surfrider/FR-e73c37180e684610ba9c81a7bf4878cb/" style="display: flex; align-items: center; text-decoration: none; color: inherit; padding: 0.2rem 0; border-bottom: 1px solid black;">
+    <img src="images/PNG_Black Logo.png" alt="Surfrider" style="width: 32px; height: 50px; margin-right: 8px; object-fit: contain;">
+    <strong>Général</strong>
+  </a>
+
+  <a href="https://palm-honeycup-c24.notion.site/Welcome-Guide-43099841244a4436b164e43826c91f79" style="display: flex; align-items: center; text-decoration: none; color: inherit; padding: 0.5rem 0; border-bottom: 1px solid black;">
+  <i class="fas fa-utensils" style="font-size: 32px; margin-right: 12px;"></i>
+  <strong>OFR - Ocean Friendly Restaurants</strong>
+</a>
+
+<a href="https://brand.surfrider.eu" style="display: flex; align-items: center; text-decoration: none; color: inherit; padding: 0.5rem 0; border-bottom: 1px solid black;">
+  <i class="fas fa-pencil-alt" style="font-size: 32px; margin-right: 12px;"></i>
+  <strong>Outils Communication</strong>
+</a>
+
+<a href="https://www.notion.so/ead3ce4bfa4549dc97d3f687e79d0792?v=1b75ecee96f34ec0b1ecb9424fbc7863&pvs=4" style="display: flex; align-items: center; text-decoration: none; color: inherit; padding: 0.5rem 0; border-bottom: 1px solid black;">
+  <i class="fas fa-film" style="font-size: 32px; margin-right: 12px;"></i>
+  <strong>OFF - Ocean Friendly Film</strong>
+</a>
+
+<a href="https://surfrider.notion.site/Les-campagnes-Coastal-Defenders-du-moment-3478fcc40f90426ca41f86ec5f5f008a" style="display: flex; align-items: center; text-decoration: none; color: inherit; padding: 0.5rem 0;">
+  <i class="fas fa-dumbbell" style="font-size: 32px; margin-right: 12px;"></i>
+  <strong>Campagnes Coastal Defenders</strong>
+</a>
+</div>
+
+
+
+    <script>
+    !function(d,s,id){
+      var js,fjs=d.getElementsByTagName(s)[0];
+      if(!d.getElementById(id)){
+        js=d.createElement(s);js.id=id;
+        js.src='https://weatherwidget.io/js/widget.min.js';
+        fjs.parentNode.insertBefore(js,fjs);
+      }
+    }(document,'script','weatherwidget-io-js');
+    </script>
+
+    <footer style="text-align: center; color: white; padding: 2rem 1rem 1rem; max-width: 360px; margin: 0 auto; word-wrap: break-word;">
+      <strong>© 2025 SURFRIDER FOUNDATION 35</strong> <br> Créé par Thomas Lesaulnier
+    </footer>
+  </main>
+
+  <script>
+    const header = document.getElementById('mainHeader');
+    const shrinkThreshold = 100;
+
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > shrinkThreshold) {
+        header.classList.add('shrink');
+      } else {
+        header.classList.remove('shrink');
+      }
+    });
+
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenuBtn = document.querySelector('.close-menu');
+
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.add('open');
+    });
+
+    closeMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+    });
+
+    // Fermer le menu lors du clic sur un lien
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>
