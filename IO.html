@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Surfrider GL35">
+  <title>GL35 Surfrider</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="apple-touch-icon" href="images/CHAPTER_logo_blue_RGB_blue.png">
+  <style>
+    :root {
+      --light-blue: #B3D4FF;
+      --dark-blue:  #005382;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(90deg, #0073BE, #1A3047);
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 180px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: height 0.3s ease, padding 0.3s ease;
+      z-index: 1000;
+    }
+    .header-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: flex-direction 0.3s ease;
+    }
+    .header-content img {
+      height: 80px;
+      transition: height 0.3s ease;
+    }
+    .title-container {
+      text-align: center;
+      transition: margin 0.3s ease;
+    }
+    .title-primary {
+      font-size: 1.5rem;
+      color: #000;
+      line-height: 1;
+    }
+    .title-secondary {
+      font-size: 1.25rem;
+      color: #000;
+      margin-top: 0.25rem;
+    }
+    header.shrink {
+      height: 60px;
+      padding: 0 20px;
+      justify-content: flex-start;
+    }
+    header.shrink .header-content {
+      flex-direction: row;
+      align-items: center;
+      margin-left: 48px;
+    }
+    header.shrink .header-content img {
+      height: 32px;
+    }
+    header.shrink .title-container {
+      text-align: left;
+      margin-left: 12px;
+    }
+    header.shrink .title-primary {
+      font-size: 1rem;
+    }
+    header.shrink .title-secondary {
+      font-size: 0.875rem;
+      margin-top: 0;
+    }
+    main {
+      padding-top: 180px;
+    }
+    /* Icônes section */
+    .icons-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      max-width: 400px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #000;
+      font-size: 0.9rem;
+    }
+    .icon-item img {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 0.5rem;
+      transition: transform 0.2s ease;
+    }
+    .icon-item:hover img {
+      transform: scale(1.1);
+    }
+    .icon-window {
+      background: #fff;
+      border-radius: 12px;
+      padding: 0.75rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      max-width: 360px;
+      margin: 1.5rem auto;
+    }
+    .icon-window-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1A3047;
+      text-align: center;
+      margin-bottom: 0.75rem;
+    }
+    /* Styles pour le menu mobile */
+    .menu-toggle {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 1100;
+    }
+    .menu-toggle img {
+      width: 100%;
+      height: 100%;
+    }
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 75%;
+      max-width: 300px;
+      height: 100%;
+      background: #ECE4CD;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+      transition: left 0.3s ease;
+      z-index: 1050;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .mobile-menu.open {
+      left: 0;
+    }
+    .mobile-menu a {
+      color: #000;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+    .mobile-menu .close-menu {
+      align-self: flex-end;
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .mobile-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .mobile-menu li {
+      margin-bottom: 0.5rem;
+    }
+    .mobile-menu .menu-category {
+      font-weight: bold;
+      text-align: center;
+      margin: 1rem 0 0.5rem;
+      cursor: default;
+    }
+    .mobile-menu a {
+      display: block;
+      padding: 0.75rem 1rem;
+    }
+
+    /* Styles pour le formulaire fiche bilan */
+    #ficheBilanForm {
+      max-width: 360px;
+      margin: 1.5rem auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 1rem 1.25rem 1.5rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      color: #1A3047;
+      font-size: 1rem;
+    }
+    #ficheBilanForm h2 {
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+    #ficheBilanForm fieldset {
+      border: none;
+      margin-bottom: 1rem;
+      padding: 0;
+    }
+    #ficheBilanForm legend {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    #ficheBilanForm label {
+      display: block;
+      margin-bottom: 0.25rem;
+      cursor: pointer;
+    }
+    #ficheBilanForm input[type="checkbox"],
+    #ficheBilanForm input[type="radio"] {
+      margin-right: 0.5rem;
+      cursor: pointer;
+    }
+    #ficheBilanForm input[type="number"],
+    #ficheBilanForm input[type="text"],
+    #ficheBilanForm select,
+    #ficheBilanForm textarea {
+      width: 100%;
+      padding: 0.4rem 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: inherit;
+      margin-top: 0.15rem;
+      margin-bottom: 0.75rem;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    #ficheBilanForm textarea {
+      min-height: 80px;
+    }
+    #ficheBilanForm .radio-group,
+    #ficheBilanForm .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+    #ficheBilanForm .radio-group label,
+    #ficheBilanForm .checkbox-group label {
+      flex: 1 1 45%;
+      font-weight: normal;
+      margin-bottom: 0;
+    }
+    #ficheBilanForm button {
+      display: block;
+      width: 100%;
+      background-color: #0073BE;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #ficheBilanForm button:hover {
+      background-color: #005382;
+    }
+    .online-button {
+      display: block;
+      width: 100%;
+      background: linear-gradient(90deg, #0073BE, #005382);
+      color: white;
+      text-decoration: none;
+      padding: 0.75rem 0;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: center;
+      margin: 1rem 0;
+    }
+    .online-button:hover {
+      opacity: 0.9;
+    }
+    @media (min-width: 480px) {
+      #ficheBilanForm .radio-group label,
+      #ficheBilanForm .checkbox-group label {
+        flex: 1 1 30%;
+      }
+    }
+
+    .where-text {
+      color: white;
+      font-size: 1.25rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <header id="mainHeader">
+    <button class="menu-toggle" aria-label="Ouvrir le menu">
+      <img src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/icons/menu.svg" alt="Menu">
+    </button>
+    <div class="header-content">
+      <img src="images/CHAPTER_logo_blue_RGB_blue.png" alt="Logo Surfrider Foundation">
+      <div class="title-container">
+        <div class="title-primary">Surfrider Foundation</div>
+        <div class="title-secondary">Ille-Et-Vilaine</div>
+      </div>
+    </div>
+  </header>
+  <nav class="mobile-menu" id="mobileMenu">
+    <button class="close-menu" aria-label="Fermer le menu">&times;</button>
+    <ul>
+      <li class="menu-category">Carte de Visite</li>
+      <li><a href="https://linktr.ee/surfrider_illeetvilaine">Linktree</a></li>
+
+      <li class="menu-category">Bénévole</li>
+      <li><a href="https://surfridereu-my.sharepoint.com/:f:/g/personal/antenne22-35_surfrider_eu/ElrOeKsqhUJBpftHoF_Hk_gB9IStf7nLn1Xhw16bwhcK7w?e=dXTZPy">OneDrive</a></li>
+      <li><a href="#">Initiatives Océanes</a></li>
+
+      <li class="menu-category">Réseaux sociaux</li>
+      <li><a href="https://www.instagram.com/surfrider_illeetvilaine?igsh=MXhwanJ1c241MXduMQ%3D%3D&utm_source=qr"><strong>Instagram</strong><br>@surfrider_illeet_vilaine</a></li>
+      <li><a href="https://www.facebook.com/surfriderfoundationeuropeantenne2235/?locale=fr_FR"><strong>Facebook</strong><br>Surfrider Foundation Europe Antenne 35</a></li>
+      <li><a href="https://www.tiktok.com/@surfrider_illeetvilaine?_t=ZN-8yBKlMVuGN0&_r=1"><strong>TikTok</strong><br>@surfrider_illeetvilaine</a></li>
+      <li><a href="https://youtube.com/@surfrider-illeetvilaine?feature=shared"><strong>Youtube</strong><br>@Surfrider-IlleEtVilaine</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <!-- Section des icônes -->
+      <div style="display: flex; justify-content: center; margin: 1.5rem 0;">
+      <a href="https://surfriderGL35.github.io" style="display: inline-block; padding: 0.5rem 1.25rem; background: white; color: #1A3047; text-decoration: none; border-radius: 999px; font-weight: 600; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); transition: background 0.3s;">
+        ← Retour
+      </a>
+    </div>
+    <div class="icon-window">
+      <h2 class="icon-window-title">Favoris</h2>
+      <section class="icons-container">
+        <a href="https://surfriderGL35.github.io/share_SFE.html" class="icon-item">
+          <img src="images/PNG_Black Logo.png" alt="Siège" style="width: 90px; height: 90px; object-fit: contain; margin-bottom: 0;">
+        </a>
+        <a href="https://linktr.ee/surfrider_illeetvilaine" class="icon-item">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg" alt="Linktree">
+          <span>Linktree</span>
+        </a>
+        <a href="https://surfridereu-my.sharepoint.com/:f:/g/personal/antenne22-35_surfrider_eu/ElrOeKsqhUJBpftHoF_Hk_gB9IStf7nLn1Xhw16bwhcK7w?e=dXTZPy" class="icon-item">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/microsoftonedrive.svg" alt="OneDrive">
+          <span>OneDrive</span>
+        </a>
+        <a href="https://surfriderGL35.github.io" class="icon-item">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/googlehome.svg" alt="Accueil" style="width: 48px; height: 48px;">
+          <span>Accueil</span>
+        </a>
+      </section>
+    </div>
+
+    <div class="icon-window">
+      <a href="https://www.initiativesoceanes.org" class="online-button">
+        Version en ligne
+      </a>
+    </div>
+    <div class="where-text">OU</div>
+    <div id="ficheBilanForm" class="icon-window" role="form" aria-labelledby="ficheBilanTitle">
+        <a class="online-button">
+        Version en Hors-Ligne
+      </a>
+      <h2 id="ficheBilanTitle">Fiche Bilan - Initiatives Océanes</h2>
+        <h3>Informations de la collecte</h3>
+        <h5>Version Hors-Ligne</h5>
+      <form id="bilanForm" onsubmit="return handleFormSubmit(event)">
+        <fieldset>
+          <label for="nom_evenement"><strong>Nom de l’évènement <span style="color:red">*</span></strong></label>
+          <input type="text" id="nom_evenement" name="nom_evenement" required>
+        </fieldset>
+        <fieldset>
+          <legend>Type de collecte <span style="color:red">*</span></legend>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="collecte" value="À pied"> À pied</label>
+            <label><input type="checkbox" name="collecte" value="Plongée"> Plongée</label>
+            <label><input type="checkbox" name="collecte" value="Embarquée"> Embarquée</label>
+            <label><input type="checkbox" name="collecte" value="Autres"> Autres</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <label for="participants">Nombre de participants <span style="color:red">*</span></label>
+          <input type="number" id="participants" name="participants" min="0" required>
+        </fieldset>
+
+        <fieldset>
+          <label for="scolaires">Nombre de scolaires <span style="color:red">*</span></label>
+          <input type="number" id="scolaires" name="scolaires" min="0" required>
+        </fieldset>
+
+        <fieldset>
+          <legend>Longueur de plage/berge observée <span style="color:red">*</span></legend>
+          <div class="radio-group">
+            <label><input type="radio" name="longueur" value="100-200m" required> 100-200m</label>
+            <label><input type="radio" name="longueur" value="200-500m"> 200-500m</label>
+            <label><input type="radio" name="longueur" value="500-1000m"> 500-1000m</label>
+            <label><input type="radio" name="longueur" value="+ de 1000m"> + de 1000m</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <label for="sacs">Nombre de sacs remplis <span style="color:red">*</span></label>
+          <input type="number" id="sacs" name="sacs" min="0" required>
+        </fieldset>
+
+        <fieldset>
+          <label for="litres">Litres si sacs non standards</label>
+          <input type="text" id="litres" name="litres" placeholder="Ex: 15 L">
+        </fieldset>
+
+        <fieldset>
+          <div>
+            <label>Question 1 : Présence de déchets plastiques ? <span style="color:red">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="q1" value="Oui" required> Oui</label>
+              <label><input type="radio" name="q1" value="Non"> Non</label>
+              <label><input type="radio" name="q1" value="NSP"> NSP</label>
+            </div>
+          </div>
+
+          <div>
+            <label>Question 2 : Présence d'espèces protégées ? <span style="color:red">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="q2" value="Oui" required> Oui</label>
+              <label><input type="radio" name="q2" value="Non"> Non</label>
+              <label><input type="radio" name="q2" value="NSP"> NSP</label>
+            </div>
+          </div>
+
+          <div>
+            <label>Question 3 : Impact humain visible ? <span style="color:red">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="q3" value="Oui" required> Oui</label>
+              <label><input type="radio" name="q3" value="Non"> Non</label>
+              <label><input type="radio" name="q3" value="NSP"> NSP</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Nouvelle section pour les déchets collectés -->
+        <fieldset>
+          <h3>Quantification</h3>
+          <div style="margin-bottom:0.5rem;"><strong>Matières plastiques</strong></div>
+          <label for="megots_de_cigarette">Mégots de cigarette (dont filtres)</label>
+          <input type="number" id="megots_de_cigarette" name="megots_de_cigarette" min="0" placeholder="Quantité">
+          <label for="bouteille_plastique_moins_0_5l">Bouteille plastique (boissons) de moins de 0,5 cl ou de 0,5l</label>
+          <input type="number" id="bouteille_plastique_moins_0_5l" name="bouteille_plastique_moins_0_5l" min="0" placeholder="Quantité">
+          <label for="bouteille_plastique_plus_0_5l">Bouteille plastique (boissons) de plus de 0,5 l</label>
+          <input type="number" id="bouteille_plastique_plus_0_5l" name="bouteille_plastique_plus_0_5l" min="0" placeholder="Quantité">
+          <label for="bouchons_de_bouteille_plastique">Bouchons de bouteille plastique</label>
+          <input type="number" id="bouchons_de_bouteille_plastique" name="bouchons_de_bouteille_plastique" min="0" placeholder="Quantité">
+          <label for="emballages_alimentaire_barquette_sandwich_pot_yaourt_fast_food">Emballages alimentaire (barquette, emballages sandwich, pot de yaourt, emballages fast food)</label>
+          <input type="number" id="emballages_alimentaire_barquette_sandwich_pot_yaourt_fast_food" name="emballages_alimentaire_barquette_sandwich_pot_yaourt_fast_food" min="0" placeholder="Quantité">
+          <label for="bouteilles_plastiques_hors_boisson">Bouteilles plastiques hors boisson (nettoyants ménagers, bouteilles cosmétiques)</label>
+          <input type="number" id="bouteilles_plastiques_hors_boisson" name="bouteilles_plastiques_hors_boisson" min="0" placeholder="Quantité">
+          <label for="sacs_plastique_fragments">Sacs plastique et fragments de sacs plastique</label>
+          <input type="number" id="sacs_plastique_fragments" name="sacs_plastique_fragments" min="0" placeholder="Quantité">
+          <label for="papiers_de_chips_barres_chocolat_emballages_confiserie_gourdes_compote">Papiers de chips, de barres chocolatées, de bonbons (emballage confiserie dont gourdes/compote)</label>
+          <input type="number" id="papiers_de_chips_barres_chocolat_emballages_confiserie_gourdes_compote" name="papiers_de_chips_barres_chocolat_emballages_confiserie_gourdes_compote" min="0" placeholder="Quantité">
+          <label for="batons_de_sucette">Bâtons de sucette</label>
+          <input type="number" id="batons_de_sucette" name="batons_de_sucette" min="0" placeholder="Quantité">
+          <label for="dechets_medicaux_plastique">Déchets médicaux (plastique) : flacon / tubes / emballages médicaments</label>
+          <input type="number" id="dechets_medicaux_plastique" name="dechets_medicaux_plastique" min="0" placeholder="Quantité">
+          <label for="dechets_sanitaires_cotons_tiges">Déchets sanitaires / hygiènes : cotons tiges</label>
+          <input type="number" id="dechets_sanitaires_cotons_tiges" name="dechets_sanitaires_cotons_tiges" min="0" placeholder="Quantité">
+          <label for="dechets_sanitaires_tampons_applicateurs_serviettes">Déchets sanitaires / hygiènes : tampons, applicateurs, serviettes hygiénique + emballages</label>
+          <input type="number" id="dechets_sanitaires_tampons_applicateurs_serviettes" name="dechets_sanitaires_tampons_applicateurs_serviettes" min="0" placeholder="Quantité">
+          <label for="dechet_sanitaire_masque">Déchet sanitaire : masque</label>
+          <input type="number" id="dechet_sanitaire_masque" name="dechet_sanitaire_masque" min="0" placeholder="Quantité">
+          <label for="lingettes_nettoyantes">Lingettes nettoyantes (ménager, hygiène)</label>
+          <input type="number" id="lingettes_nettoyantes" name="lingettes_nettoyantes" min="0" placeholder="Quantité">
+          <label for="morceaux_de_polystyrene_2_5_50_cm">Morceaux de polystyrène entre 2,5 et 50 cm</label>
+          <input type="number" id="morceaux_de_polystyrene_2_5_50_cm" name="morceaux_de_polystyrene_2_5_50_cm" min="0" placeholder="Quantité">
+          <label for="morceaux_de_plastique_2_5_50_cm">Morceaux de plastique entre 2,5 et 50 cm</label>
+          <input type="number" id="morceaux_de_plastique_2_5_50_cm" name="morceaux_de_plastique_2_5_50_cm" min="0" placeholder="Quantité">
+          <label for="gobelets_en_plastique_dont_couvercle">Gobelets en plastique, dont couvercle</label>
+          <input type="number" id="gobelets_en_plastique_dont_couvercle" name="gobelets_en_plastique_dont_couvercle" min="0" placeholder="Quantité">
+          <label for="vaisselles_pique_nique_assiettes">Vaisselles de pique-nique : assiettes</label>
+          <input type="number" id="vaisselles_pique_nique_assiettes" name="vaisselles_pique_nique_assiettes" min="0" placeholder="Quantité">
+          <label for="vaisselles_pique_nique_couverts">Vaisselles de pique-nique : couverts</label>
+          <input type="number" id="vaisselles_pique_nique_couverts" name="vaisselles_pique_nique_couverts" min="0" placeholder="Quantité">
+          <label for="pailles">Pailles</label>
+          <input type="number" id="pailles" name="pailles" min="0" placeholder="Quantité">
+          <label for="touillettes_agitateur_de_boisson">Touillettes (agitateur de boisson)</label>
+          <input type="number" id="touillettes_agitateur_de_boisson" name="touillettes_agitateur_de_boisson" min="0" placeholder="Quantité">
+          <label for="dechets_lies_peche_filets_cordes_cordelette_filets_cordes_entremeles">Déchets liés à la pêche: filets (dont morceaux), cordes, cordelette, filets et cordes entremêlés</label>
+          <input type="number" id="dechets_lies_peche_filets_cordes_cordelette_filets_cordes_entremeles" name="dechets_lies_peche_filets_cordes_cordelette_filets_cordes_entremeles" min="0" placeholder="Quantité">
+          <label for="dechets_lies_peche_lignes_de_peche_hamecon_boite_appats">Déchets liés à la pêche : lignes de pêche/hameçon, boîte d'appats</label>
+          <input type="number" id="dechets_lies_peche_lignes_de_peche_hamecon_boite_appats" name="dechets_lies_peche_lignes_de_peche_hamecon_boite_appats" min="0" placeholder="Quantité">
+          <label for="cartouches_de_chasse">Cartouches de chasse</label>
+          <input type="number" id="cartouches_de_chasse" name="cartouches_de_chasse" min="0" placeholder="Quantité">
+          <label for="jouets">Jouets</label>
+          <input type="number" id="jouets" name="jouets" min="0" placeholder="Quantité">
+          <label for="ballons_de_baudruche">Ballons de baudruche</label>
+          <input type="number" id="ballons_de_baudruche" name="ballons_de_baudruche" min="0" placeholder="Quantité">
+          <label for="pneus">Pneus</label>
+          <input type="number" id="pneus" name="pneus" min="0" placeholder="Quantité">
+          <label for="briquets">Briquets</label>
+          <input type="number" id="briquets" name="briquets" min="0" placeholder="Quantité">
+          <label for="sandales_chaussures">Sandales / chaussures</label>
+          <input type="number" id="sandales_chaussures" name="sandales_chaussures" min="0" placeholder="Quantité">
+          <label for="dechets_lies_conchyliculture">Déchets liés à la conchyliculture* (poche, casier, jupette etc.)</label>
+          <input type="number" id="dechets_lies_conchyliculture" name="dechets_lies_conchyliculture" min="0" placeholder="Quantité">
+          <div style="margin:0.75rem 0 0.5rem;"><strong>Verre</strong></div>
+          <label for="bouteille_en_verre">Bouteille en verre</label>
+          <input type="number" id="bouteille_en_verre" name="bouteille_en_verre" min="0" placeholder="Quantité">
+          <label for="morceaux_de_verre_ceramiques">Morceaux de verre / morceaux de céramiques</label>
+          <input type="number" id="morceaux_de_verre_ceramiques" name="morceaux_de_verre_ceramiques" min="0" placeholder="Quantité">
+
+          <div style="margin:0.75rem 0 0.5rem;"><strong>Métal</strong></div>
+          <label for="canette">Canette</label>
+          <input type="number" id="canette" name="canette" min="0" placeholder="Quantité">
+          <label for="capsules_de_boisson">Capsules de boisson</label>
+          <input type="number" id="capsules_de_boisson" name="capsules_de_boisson" min="0" placeholder="Quantité">
+          <label for="morceaux_de_fer_ferraille">Morceaux de fer, ferraille</label>
+          <input type="number" id="morceaux_de_fer_ferraille" name="morceaux_de_fer_ferraille" min="0" placeholder="Quantité">
+
+          <div style="margin:0.75rem 0 0.5rem;"><strong>Tissus</strong></div>
+          <label for="vetements_torchons">Vêtements, torchons</label>
+          <input type="number" id="vetements_torchons" name="vetements_torchons" min="0" placeholder="Quantité">
+        </fieldset>
+
+          <fieldset>
+          <label for="commentaires">Commentaires (facultatif)</label>
+          <textarea id="commentaires" name="commentaires" placeholder="Votre commentaire..."></textarea>
+        </fieldset>
+
+        <div style="background: var(--light-blue); padding: 1rem; border-radius: 8px; margin-top: 1rem; margin-bottom: 1rem;">
+          <fieldset style="border: none; margin-bottom: 0;">
+            <label for="nom_declarant"><strong>Nom du déclarant <span style="color:red">*</span></strong></label>
+            <input type="text" id="nom_declarant" name="nom_declarant" required>
+          </fieldset>
+        </div>
+
+        <button type="submit">Valider</button>
+      </form>
+    </div>
+
+    <script>
+    !function(d,s,id){
+      var js,fjs=d.getElementsByTagName(s)[0];
+      if(!d.getElementById(id)){
+        js=d.createElement(s);js.id=id;
+        js.src='https://weatherwidget.io/js/widget.min.js';
+        fjs.parentNode.insertBefore(js,fjs);
+      }
+    }(document,'script','weatherwidget-io-js');
+    </script>
+
+    <footer style="text-align: center; color: white; padding: 2rem 1rem 1rem; max-width: 360px; margin: 0 auto; word-wrap: break-word;">
+      <strong>© 2025 SURFRIDER FOUNDATION 35</strong> <br> Créé par Thomas Lesaulnier
+    </footer>
+  </main>
+
+
+  <script>
+    const header = document.getElementById('mainHeader');
+    const shrinkThreshold = 100;
+
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > shrinkThreshold) {
+        header.classList.add('shrink');
+      } else {
+        header.classList.remove('shrink');
+      }
+    });
+
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenuBtn = document.querySelector('.close-menu');
+
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.add('open');
+    });
+
+    closeMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+    });
+
+    // Fermer le menu lors du clic sur un lien
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+      });
+    });
+
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      const form = document.getElementById('bilanForm');
+      const formData = new FormData(form);
+
+      let message = "Bonjour, vous retrouverez les différentes informations de l’événement suivant :%0D%0A%0D%0A";
+
+      message += "Nom de l’évènement : " + encodeURIComponent(formData.get("nom_evenement")) + "%0D%0A";
+      message += "Type de collecte : ";
+      const collecte = formData.getAll("collecte");
+      message += collecte.join(", ") + "%0D%0A";
+      message += "Nombre de participants : " + encodeURIComponent(formData.get("participants")) + "%0D%0A";
+      message += "Nombre de scolaires : " + encodeURIComponent(formData.get("scolaires")) + "%0D%0A";
+      message += "Longueur de plage/berge observée : " + encodeURIComponent(formData.get("longueur")) + "%0D%0A";
+      message += "Nombre de sacs remplis : " + encodeURIComponent(formData.get("sacs")) + "%0D%0A";
+      message += "Litres si sacs non standards : " + encodeURIComponent(formData.get("litres") || "") + "%0D%0A%0D%0A";
+
+      message += "Questions environnement :%0D%0A";
+      message += "- Présence de déchets plastiques ? " + encodeURIComponent(formData.get("q1")) + "%0D%0A";
+      message += "- Présence d'espèces protégées ? " + encodeURIComponent(formData.get("q2")) + "%0D%0A";
+      message += "- Impact humain visible ? " + encodeURIComponent(formData.get("q3")) + "%0D%0A%0D%0A";
+
+      // Déchets collectés - regroupés par catégories
+      const dechetsCategories = [
+        {
+          titre: "Matières plastiques",
+          items: [
+            { label: "Mégots de cigarette (dont filtres)", name: "megots_de_cigarette" },
+            { label: "Bouteille plastique (boissons) de moins de 0,5 cl ou de 0,5l", name: "bouteille_plastique_moins_0_5l" },
+            { label: "Bouteille plastique (boissons) de plus de 0,5 l", name: "bouteille_plastique_plus_0_5l" },
+            { label: "Bouchons de bouteille plastique", name: "bouchons_de_bouteille_plastique" },
+            { label: "Emballages alimentaire (barquette, emballages sandwich, pot de yaourt, emballages fast food)", name: "emballages_alimentaire_barquette_sandwich_pot_yaourt_fast_food" },
+            { label: "Bouteilles plastiques hors boisson (nettoyants ménagers, bouteilles cosmétiques)", name: "bouteilles_plastiques_hors_boisson" },
+            { label: "Sacs plastique et fragments de sacs plastique", name: "sacs_plastique_fragments" },
+            { label: "Papiers de chips, de barres chocolatées, de bonbons (emballage confiserie dont gourdes/compote)", name: "papiers_de_chips_barres_chocolat_emballages_confiserie_gourdes_compote" },
+            { label: "Bâtons de sucette", name: "batons_de_sucette" },
+            { label: "Déchets médicaux (plastique) : flacon / tubes / emballages médicaments", name: "dechets_medicaux_plastique" },
+            { label: "Déchets sanitaires / hygiènes : cotons tiges", name: "dechets_sanitaires_cotons_tiges" },
+            { label: "Déchets sanitaires / hygiènes : tampons, applicateurs, serviettes hygiénique + emballages", name: "dechets_sanitaires_tampons_applicateurs_serviettes" },
+            { label: "Déchet sanitaire : masque", name: "dechet_sanitaire_masque" },
+            { label: "Lingettes nettoyantes (ménager, hygiène)", name: "lingettes_nettoyantes" },
+            { label: "Morceaux de polystyrène entre 2,5 et 50 cm", name: "morceaux_de_polystyrene_2_5_50_cm" },
+            { label: "Morceaux de plastique entre 2,5 et 50 cm", name: "morceaux_de_plastique_2_5_50_cm" },
+            { label: "Gobelets en plastique, dont couvercle", name: "gobelets_en_plastique_dont_couvercle" },
+            { label: "Vaisselles de pique-nique : assiettes", name: "vaisselles_pique_nique_assiettes" },
+            { label: "Vaisselles de pique-nique : couverts", name: "vaisselles_pique_nique_couverts" },
+            { label: "Pailles", name: "pailles" },
+            { label: "Touillettes (agitateur de boisson)", name: "touillettes_agitateur_de_boisson" },
+            { label: "Déchets liés à la pêche: filets (dont morceaux), cordes, cordelette, filets et cordes entremêlés", name: "dechets_lies_peche_filets_cordes_cordelette_filets_cordes_entremeles" },
+            { label: "Déchets liés à la pêche : lignes de pêche/hameçon, boîte d'appats", name: "dechets_lies_peche_lignes_de_peche_hamecon_boite_appats" },
+            { label: "Cartouches de chasse", name: "cartouches_de_chasse" },
+            { label: "Jouets", name: "jouets" },
+            { label: "Ballons de baudruche", name: "ballons_de_baudruche" },
+            { label: "Pneus", name: "pneus" },
+            { label: "Briquets", name: "briquets" },
+            { label: "Sandales / chaussures", name: "sandales_chaussures" },
+            { label: "Déchets liés à la conchyliculture* (poche, casier, jupette etc.)", name: "dechets_lies_conchyliculture" }
+          ]
+        },
+        {
+          titre: "Verre",
+          items: [
+            { label: "Bouteille en verre", name: "bouteille_en_verre" },
+            { label: "Morceaux de verre / morceaux de céramiques", name: "morceaux_de_verre_ceramiques" }
+          ]
+        },
+        {
+          titre: "Métal",
+          items: [
+            { label: "Canette", name: "canette" },
+            { label: "Capsules de boisson", name: "capsules_de_boisson" },
+            { label: "Morceaux de fer, ferraille", name: "morceaux_de_fer_ferraille" }
+          ]
+        },
+        {
+          titre: "Tissus",
+          items: [
+            { label: "Vêtements, torchons", name: "vetements_torchons" }
+          ]
+        }
+      ];
+      let dechetsMessage = "";
+      dechetsCategories.forEach(function(cat) {
+        let catMsg = "";
+        cat.items.forEach(function(d) {
+          const val = formData.get(d.name);
+          if (val !== null && val !== "" && !isNaN(val) && Number(val) > 0) {
+            catMsg += "- " + d.label + " : " + encodeURIComponent(val) + "%0D%0A";
+          }
+        });
+        if (catMsg) {
+          dechetsMessage += cat.titre + " :%0D%0A" + catMsg;
+        }
+      });
+      if (dechetsMessage) {
+        message += "Déchets collectés :%0D%0A" + dechetsMessage + "%0D%0A";
+      }
+
+      const commentaires = formData.get("commentaires");
+      if (commentaires) {
+        message += "Commentaires : %0D%0A" + encodeURIComponent(commentaires) + "%0D%0A";
+      }
+
+      message += "%0D%0ATrès belle journée !%0D%0A";
+      message += encodeURIComponent(formData.get("nom_declarant"));
+
+      const mailto = `mailto:antenne35@surfrider.eu?subject=Fiche Bilan Initiatives Océanes&body=${message}`;
+      window.location.href = mailto;
+      return false;
+    }
+  </script>
+</body>
+</html>
