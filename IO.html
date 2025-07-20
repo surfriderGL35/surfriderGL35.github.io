@@ -733,7 +733,7 @@
       const form = document.getElementById('bilanForm');
       const formData = new FormData(form);
 
-      let message = "Bonjour, vous retrouverez les différentes informations de l’événement suivant :%0D%0A%0D%0A";
+      let message = "Bonjour,%0D%0AVous retrouverez les différentes informations de l’événement suivant :%0D%0A%0D%0A";
 
       message += "Nom de l’évènement : " + encodeURIComponent(formData.get("nom_evenement")) + "%0D%0A";
       message += "Type de collecte : ";
