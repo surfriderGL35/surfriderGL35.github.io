@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Surfrider GL35">
+  <title>GL35 Surfrider</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="apple-touch-icon" href="images/CHAPTER_logo_blue_RGB_blue.png">
+  <style>
+    /* Styles for sound workshop items */
+    .sound-item {
+      border-bottom: 1px solid #ccc;
+      padding: 1rem 0;
+    }
+    .sound-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sound-title {
+      font-weight: bold;
+      font-size: 1rem;
+      color: #000;
+    }
+    .sound-play-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: var(--dark-blue);
+    }
+    .sound-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .sound-play-button {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sound-discover-button {
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      background: var(--light-blue);
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .sound-image {
+      display: none;
+      margin-top: 0.5rem;
+      max-width: 100%;
+      border-radius: 8px;
+    }
+    .sound-image.visible {
+      display: block;
+    }
+    .sound-discover-container {
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+    :root {
+      --light-blue: #B3D4FF;
+      --dark-blue:  #005382;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(90deg, #0073BE, #1A3047);
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 180px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: height 0.3s ease, padding 0.3s ease;
+      z-index: 1000;
+    }
+    .header-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: flex-direction 0.3s ease;
+    }
+    .header-content img {
+      height: 80px;
+      transition: height 0.3s ease;
+    }
+    .title-container {
+      text-align: center;
+      transition: margin 0.3s ease;
+    }
+    .title-primary {
+      font-size: 1.5rem;
+      color: #000;
+      line-height: 1;
+    }
+    .title-secondary {
+      font-size: 1.25rem;
+      color: #000;
+      margin-top: 0.25rem;
+    }
+    header.shrink {
+      height: 60px;
+      padding: 0 20px;
+      justify-content: flex-start;
+    }
+    header.shrink .header-content {
+      flex-direction: row;
+      align-items: center;
+      margin-left: 48px;
+    }
+    header.shrink .header-content img {
+      height: 32px;
+    }
+    header.shrink .title-container {
+      text-align: left;
+      margin-left: 12px;
+    }
+    header.shrink .title-primary {
+      font-size: 1rem;
+    }
+    header.shrink .title-secondary {
+      font-size: 0.875rem;
+      margin-top: 0;
+    }
+    main {
+      padding-top: 180px;
+    }
+    /* Icônes section */
+    .icons-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      max-width: 400px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #000;
+      font-size: 0.9rem;
+    }
+    .icon-item img {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 0.5rem;
+      transition: transform 0.2s ease;
+    }
+    .icon-item:hover img {
+      transform: scale(1.1);
+    }
+    .icon-window {
+      background: #fff;
+      border-radius: 12px;
+      padding: 0.75rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      max-width: 360px;
+      margin: 1.5rem auto;
+    }
+    .icon-window-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1A3047;
+      text-align: center;
+      margin-bottom: 0.75rem;
+    }
+    /* Styles pour le menu mobile */
+    .menu-toggle {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 1100;
+    }
+    .menu-toggle img {
+      width: 100%;
+      height: 100%;
+    }
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 75%;
+      max-width: 300px;
+      height: 100%;
+      background: #ECE4CD;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+      transition: left 0.3s ease;
+      z-index: 1050;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .mobile-menu.open {
+      left: 0;
+    }
+    .mobile-menu a {
+      color: #000;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+    .mobile-menu .close-menu {
+      align-self: flex-end;
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .mobile-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .mobile-menu li {
+      margin-bottom: 0.5rem;
+    }
+    .mobile-menu .menu-category {
+      font-weight: bold;
+      text-align: center;
+      margin: 1rem 0 0.5rem;
+      cursor: default;
+    }
+    .mobile-menu a {
+      display: block;
+      padding: 0.75rem 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header id="mainHeader">
+    <button class="menu-toggle" aria-label="Ouvrir le menu">
+      <img src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/icons/menu.svg" alt="Menu">
+    </button>
+    <div class="header-content">
+      <img src="images/CHAPTER_logo_blue_RGB_blue.png" alt="Logo Surfrider Foundation">
+      <div class="title-container">
+        <div class="title-primary">Surfrider Foundation</div>
+        <div class="title-secondary">Ille-Et-Vilaine</div>
+      </div>
+    </div>
+  </header>
+  <nav class="mobile-menu" id="mobileMenu">
+    <button class="close-menu" aria-label="Fermer le menu">&times;</button>
+    <ul>
+      <li class="menu-category">Carte de Visite</li>
+      <li><a href="https://linktr.ee/surfrider_illeetvilaine">Linktree</a></li>
+
+      <li class="menu-category">Bénévole</li>
+      <li><a href="https://surfridereu-my.sharepoint.com/:f:/g/personal/antenne22-35_surfrider_eu/ElrOeKsqhUJBpftHoF_Hk_gB9IStf7nLn1Xhw16bwhcK7w?e=dXTZPy">OneDrive</a></li>
+      <li><a href="https://surfriderGL35.github.io/IO.html">Initiatives Océanes</a></li>
+      <li><a href="#">Atelier Son</a></li>
+      <li><a href="https://www.surfrider.fr/landing-page/newsletter-groupes-locaux/">Newsletter (inscription)</a></li>
+
+      <li class="menu-category">Réseaux sociaux</li>
+      <li><a href="https://www.instagram.com/surfrider_illeetvilaine?igsh=MXhwanJ1c241MXduMQ%3D%3D&utm_source=qr"><strong>Instagram</strong><br>@surfrider_illeet_vilaine</a></li>
+      <li><a href="https://www.facebook.com/surfriderfoundationeuropeantenne2235/?locale=fr_FR"><strong>Facebook</strong><br>Surfrider Foundation Europe Antenne 35</a></li>
+      <li><a href="https://www.tiktok.com/@surfrider_illeetvilaine?_t=ZN-8yBKlMVuGN0&_r=1"><strong>TikTok</strong><br>@surfrider_illeetvilaine</a></li>
+      <li><a href="https://youtube.com/@surfrider-illeetvilaine?feature=shared"><strong>Youtube</strong><br>@Surfrider-IlleEtVilaine</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <!-- Section des icônes -->
+    <div style="display: flex; justify-content: center; margin: 1.5rem 0;">
+      <a href="https://surfriderGL35.github.io" style="display: inline-block; padding: 0.5rem 1.25rem; background: white; color: #1A3047; text-decoration: none; border-radius: 999px; font-weight: 600; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); transition: background 0.3s;">
+        ← Retour
+      </a>
+    </div>
+
+    <div class="icon-window">
+      <h2 class="icon-window-title">Atelier Son</h2>
+
+        <!-- Example sound item; duplicate this block for each sound -->
+        <div class="sound-item">
+          <div class="sound-header">
+            <div class="sound-title">La Baleine à bosse</div>
+            <button class="sound-play-button" aria-label="Play"><i class="fas fa-play"></i></button>
+          </div>
+          <audio src="sounds/Baleine_a_bosse.mp3"></audio>
+          <div class="sound-discover-container">
+            <button class="sound-discover-button">Découvrir</button>
+          </div>
+          <img src="sounds/images/Baleine_a_bosse.jpeg" alt="Illustration de l'animal" class="sound-image">
+        </div>
+
+        <!-- Example sound item; duplicate this block for each sound -->
+        <div class="sound-item">
+          <div class="sound-header">
+            <div class="sound-title">Beluga</div>
+            <button class="sound-play-button" aria-label="Play"><i class="fas fa-play"></i></button>
+          </div>
+          <audio src="sounds/Beluga.mp3"></audio>
+          <div class="sound-discover-container">
+            <button class="sound-discover-button">Découvrir</button>
+          </div>
+          <img src="sounds/images/Beluga.jpeg" alt="Illustration de l'animal" class="sound-image">
+        </div>
+
+        <!-- Example sound item; duplicate this block for each sound -->
+        <div class="sound-item">
+          <div class="sound-header">
+            <div class="sound-title">Cachalot</div>
+            <button class="sound-play-button" aria-label="Play"><i class="fas fa-play"></i></button>
+          </div>
+          <audio src="sounds/Cachalot.mp3"></audio>
+          <div class="sound-discover-container">
+            <button class="sound-discover-button">Découvrir</button>
+          </div>
+          <img src="sounds/images/Cachalot.png" alt="Illustration de l'animal" class="sound-image">
+        </div>
+
+        <!-- Example sound item; duplicate this block for each sound -->
+        <div class="sound-item">
+          <div class="sound-header">
+            <div class="sound-title">Crevette Pistolet</div>
+            <button class="sound-play-button" aria-label="Play"><i class="fas fa-play"></i></button>
+          </div>
+          <audio src="sounds/Crevette_pistolet.mp3"></audio>
+          <div class="sound-discover-container">
+            <button class="sound-discover-button">Découvrir</button>
+          </div>
+          <img src="sounds/images/Crevette_pistolet.webp" alt="Illustration de l'animal" class="sound-image">
+        </div>
+
+        <!-- Example sound item; duplicate this block for each sound -->
+        <div class="sound-item">
+          <div class="sound-header">
+            <div class="sound-title">Dauphin</div>
+            <button class="sound-play-button" aria-label="Play"><i class="fas fa-play"></i></button>
+          </div>
+          <audio src="sounds/Dauphin.mp3"></audio>
+          <div class="sound-discover-container">
+            <button class="sound-discover-button">Découvrir</button>
+          </div>
+          <img src="sounds/images/Dauphin.avif" alt="Illustration de l'animal" class="sound-image">
+        </div>
+
+        <!-- Example sound item; duplicate this block for each sound -->
+        <div class="sound-item">
+          <div class="sound-header">
+            <div class="sound-title">Goéland</div>
+            <button class="sound-play-button" aria-label="Play"><i class="fas fa-play"></i></button>
+          </div>
+          <audio src="sounds/Goeland.mp3"></audio>
+          <div class="sound-discover-container">
+            <button class="sound-discover-button">Découvrir</button>
+          </div>
+          <img src="sounds/images/Goeland.jpeg" alt="Illustration de l'animal" class="sound-image">
+        </div>
+
+        <!-- Example sound item; duplicate this block for each sound -->
+        <div class="sound-item">
+          <div class="sound-header">
+            <div class="sound-title">Huitrier Pie</div>
+            <button class="sound-play-button" aria-label="Play"><i class="fas fa-play"></i></button>
+          </div>
+          <audio src="sounds/Huitrier_pie.mp3"></audio>
+          <div class="sound-discover-container">
+            <button class="sound-discover-button">Découvrir</button>
+          </div>
+          <img src="sounds/images/Huitrier_pie.png" alt="Illustration de l'animal" class="sound-image">
+        </div>
+
+        <!-- Example sound item; duplicate this block for each sound -->
+        <div class="sound-item">
+          <div class="sound-header">
+            <div class="sound-title">Mouette Rieuse</div>
+            <button class="sound-play-button" aria-label="Play"><i class="fas fa-play"></i></button>
+          </div>
+          <audio src="sounds/Mouette_rieuse.mp3"></audio>
+          <div class="sound-discover-container">
+            <button class="sound-discover-button">Découvrir</button>
+          </div>
+          <img src="sounds/images/Mouette_rieuse.webp" alt="Illustration de l'animal" class="sound-image">
+        </div>
+
+        <!-- Example sound item; duplicate this block for each sound -->
+        <div class="sound-item">
+          <div class="sound-header">
+            <div class="sound-title">Phoque Gris</div>
+            <button class="sound-play-button" aria-label="Play"><i class="fas fa-play"></i></button>
+          </div>
+          <audio src="sounds/Phoque_gris.mp3"></audio>
+          <div class="sound-discover-container">
+            <button class="sound-discover-button">Découvrir</button>
+          </div>
+          <img src="sounds/images/Phoque_gris.jpeg" alt="Illustration de l'animal" class="sound-image">
+        </div>
+
+        <!-- Example sound item; duplicate this block for each sound -->
+        <div class="sound-item">
+          <div class="sound-header">
+            <div class="sound-title">Sterne Caugek</div>
+            <button class="sound-play-button" aria-label="Play"><i class="fas fa-play"></i></button>
+          </div>
+          <audio src="sounds/Sterne_caugek.mp3"></audio>
+          <div class="sound-discover-container">
+            <button class="sound-discover-button">Découvrir</button>
+          </div>
+          <img src="sounds/images/Sterne_caugek.jpeg" alt="Illustration de l'animal" class="sound-image">
+        </div>
+
+        <!-- Fin de l'exemple -->
+    </div>
+    <footer style="text-align: center; color: white; padding: 2rem 1rem 1rem; max-width: 360px; margin: 0 auto; word-wrap: break-word;">
+      <strong>© 2025 SURFRIDER FOUNDATION 35</strong> <br> Créé par Thomas Lesaulnier
+    </footer>
+  </main>
+
+  <script>
+    const header = document.getElementById('mainHeader');
+    const shrinkThreshold = 100;
+
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > shrinkThreshold) {
+        header.classList.add('shrink');
+      } else {
+        header.classList.remove('shrink');
+      }
+    });
+
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenuBtn = document.querySelector('.close-menu');
+
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.add('open');
+    });
+
+    closeMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+    });
+
+    // Fermer le menu lors du clic sur un lien
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+      });
+    });
+    // Sound workshop functionality
+    document.querySelectorAll('.sound-play-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const item = button.closest('.sound-item');
+        const audio = item.querySelector('audio');
+        // Pause any other playing audio
+        document.querySelectorAll('.sound-item').forEach(otherItem => {
+          if (otherItem !== item) {
+            const otherAudio = otherItem.querySelector('audio');
+            const otherButton = otherItem.querySelector('.sound-play-button');
+            otherAudio.pause();
+            otherButton.innerHTML = '<i class="fas fa-play"></i>';
+          }
+        });
+        if (audio.paused) {
+          audio.play();
+          button.innerHTML = '<i class="fas fa-pause"></i>';
+        } else {
+          audio.pause();
+          button.innerHTML = '<i class="fas fa-play"></i>';
+        }
+      });
+    });
+
+    document.querySelectorAll('.sound-discover-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const item = button.closest('.sound-item');
+        const img = item.querySelector('.sound-image');
+        img.classList.toggle('visible');
+      });
+    });
+  </script>
+</body>
+</html>
